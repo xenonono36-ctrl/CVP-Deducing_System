@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accounting Software Module 4</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Accounting Software Module 4</h1>
+            <p>Simple ledger, trial balance, and financial summary dashboard.</p>
+        </header>
+
+        <div class="actions">
+            <a class="button secondary" href="{{ url_for('reset_accounts') }}">Reset Ledger</a>
+        </div>
+
+        <section class="panel">
+            <h2>Add Journal Entry</h2>
+            <form method="post">
+                <div class="form-row">
+                    <label>Date</label>
+                    <input type="date" name="date" value="2026-08-01" required />
+                </div>
+                <div class="form-row">
+                    <label>Description</label>
+                    <input type="text" name="description" value="New transaction" required />
+                </div>
+                <div class="form-row dual">
+                    <div>
+                        <label>Debit Account</label>
+                        <select name="debit_account" required>
+                            {% for code, account in accounts.items() %}
+                            <option value="{{ code }}">{{ code }} - {{ account.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Credit Account</label>
+                        <select name="credit_account" required>
+                            {% for code, account in accounts.items() %}
+                            <option value="{{ code }}">{{ code }} - {{ account.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Amount</label>
+                    <input type="number" name="amount" min="0.01" step="0.01" value="1000" required />
+                </div>
+                <button type="submit">Post Entry</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Chart of Accounts</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for code, account in accounts.items() %}
+                    <tr>
+                        <td>{{ code }}</td>
+                        <td>{{ account.name }}</td>
+                        <td>{{ account.type }}</td>
+                        <td>{{ '%.2f'|format(account.balance) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="panel">
+            <h2>Trial Balance</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for code, row in trial_balance['balances'].items() %}
+                    <tr>
+                        <td>{{ row.name }}</td>
+                        <td>{{ '%.2f'|format(row.debit) }}</td>
+                        <td>{{ '%.2f'|format(row.credit) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th>{{ '%.2f'|format(trial_balance['total_debit']) }}</th>
+                        <th>{{ '%.2f'|format(trial_balance['total_credit']) }}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <section class="panel summary">
+            <h2>Financial Summary</h2>
+            <div class="summary-grid">
+                <div><strong>Revenue:</strong> {{ '%.2f'|format(financial_report['revenue']) }}</div>
+                <div><strong>Expenses:</strong> {{ '%.2f'|format(financial_report['expenses']) }}</div>
+                <div><strong>Net Income:</strong> {{ '%.2f'|format(financial_report['net_income']) }}</div>
+                <div><strong>Total Assets:</strong> {{ '%.2f'|format(financial_report['total_assets']) }}</div>
+                <div><strong>Total Liabilities:</strong> {{ '%.2f'|format(financial_report['total_liabilities']) }}</div>
+                <div><strong>Equity:</strong> {{ '%.2f'|format(financial_report['equity']) }}</div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

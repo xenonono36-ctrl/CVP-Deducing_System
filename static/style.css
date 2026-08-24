@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1d2a39;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+h1, h2 {
+    margin-bottom: 10px;
+}
+
+.panel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-row.dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #c9d4e1;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+button {
+    background: #2f6fed;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    width: auto;
+    padding: 10px 18px;
+}
+
+.actions {
+    margin-bottom: 18px;
+}
+
+.button {
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.button.secondary {
+    background: #eaf0ff;
+    color: #1f3d78;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ebedf0;
+    text-align: left;
+}
+
+th {
+    background: #f2f6ff;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
