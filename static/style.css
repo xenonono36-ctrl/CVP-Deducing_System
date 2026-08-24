@@ -33,6 +33,53 @@ body {
     padding: 0 20px;
 }
 
+.section-nav {
+    position: sticky;
+    top: 12px;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 14px;
+    margin: 24px 0 18px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 8px 16px rgba(22, 38, 63, 0.06);
+    backdrop-filter: blur(8px);
+}
+
+.section-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.section-link:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-color: #d8e6ff;
+    transform: translateY(-1px);
+}
+
+.section-link.active {
+    background: linear-gradient(135deg, var(--primary) 0%, #4a79c7 100%);
+    color: white;
+    box-shadow: 0 8px 18px rgba(45, 93, 161, 0.2);
+}
+
+.section-panel {
+    scroll-margin-top: 110px;
+}
+
 .topbar {
     background: linear-gradient(135deg, #111d2f 0%, #203a5b 100%);
     color: white;
@@ -161,6 +208,24 @@ input, select {
 input:focus, select:focus {
     outline: 2px solid rgba(45, 93, 161, 0.15);
     border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(45, 93, 161, 0.08);
+}
+
+.panel,
+.metric-card,
+.summary-box,
+.chart-card,
+.button,
+.section-link {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.panel:hover,
+.metric-card:hover,
+.summary-box:hover,
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(22, 38, 63, 0.08);
 }
 
 .button {
@@ -342,6 +407,72 @@ th {
     margin-top: 18px;
 }
 
+.chart-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.chart-toolbar strong,
+.chart-toolbar span {
+    display: block;
+}
+
+.chart-toolbar span {
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+}
+
+.chart-reset,
+.legend-toggle {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: white;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font: inherit;
+}
+
+.chart-reset {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.chart-reset:hover,
+.legend-toggle:hover,
+.legend-toggle.active {
+    border-color: #bfd4f5;
+    background: var(--primary-soft);
+    color: var(--primary);
+}
+
+.chart-tooltip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    min-height: 38px;
+    margin-top: 8px;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #f7faff;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    opacity: 0.55;
+}
+
+.chart-tooltip.visible {
+    opacity: 1;
+    border-color: #bfd4f5;
+}
+
+.chart-tooltip strong {
+    color: var(--ink);
+}
+
 svg {
     width: 100%;
     height: auto;
@@ -356,6 +487,14 @@ svg {
     margin-top: 12px;
     color: var(--ink-soft);
     font-size: 0.87rem;
+}
+
+.legend-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: 0.82rem;
 }
 
 .legend span {
@@ -411,6 +550,11 @@ svg {
 
     .panel {
         padding: 18px 14px;
+    }
+
+    .chart-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }
 

@@ -10,7 +10,7 @@
     <header class="topbar">
         <div class="container header-inner">
             <div>
-                <p class="eyebrow">Module 4 | Group 4</p>
+                <p class="eyebrow">Accounting Dashboard</p>
                 <h1>Accounting Decision-Support System</h1>
             </div>
             <a class="button button-secondary" href="{{ url_for('reset_accounts') }}">Reset Ledger</a>
@@ -18,7 +18,18 @@
     </header>
 
     <main class="container">
-        <section class="hero panel">
+        <nav class="section-nav" aria-label="Dashboard sections">
+            <a class="section-link active" href="#overview">Overview</a>
+            <a class="section-link" href="#journal-entry">Journal Entry</a>
+            <a class="section-link" href="#financial-summary">Financial Summary</a>
+            <a class="section-link" href="#accounts">Accounts</a>
+            <a class="section-link" href="#trial-balance">Trial Balance</a>
+            <a class="section-link" href="#analysis">Analysis</a>
+            <a class="section-link" href="#decision">Decision</a>
+            <a class="section-link" href="#scenario">What-if</a>
+        </nav>
+
+        <section id="overview" class="hero panel section-panel">
             <div>
                 <p class="eyebrow accent">Overview</p>
                 <h2>Cost, volume, and profit analysis with live accounting updates</h2>
@@ -29,7 +40,7 @@
             </div>
         </section>
 
-        <section class="two-column">
+        <section id="journal-entry" class="two-column section-panel">
             <div class="panel">
                 <div class="section-heading">
                     <h3>Add journal entry</h3>
@@ -101,7 +112,7 @@
 
         <section class="summary-grid metrics" id="keyResults"></section>
 
-        <section class="panel">
+        <section id="financial-summary" class="panel section-panel">
             <div class="section-heading">
                 <h3>Financial summary</h3>
             </div>
@@ -133,8 +144,8 @@
             </div>
         </section>
 
-        <section class="two-column table-layout">
-            <div class="panel">
+        <section class="two-column table-layout section-panel">
+            <div id="accounts" class="panel">
                 <div class="section-heading">
                     <h3>Chart of accounts</h3>
                 </div>
@@ -162,7 +173,7 @@
                 </div>
             </div>
 
-            <div class="panel">
+            <div id="trial-balance" class="panel">
                 <div class="section-heading">
                     <h3>Trial balance</h3>
                 </div>
@@ -196,30 +207,38 @@
             </div>
         </section>
 
-        <section class="panel">
+        <section id="analysis" class="panel section-panel">
             <div class="section-heading">
                 <h3>Break-even and target analysis</h3>
             </div>
             <div class="summary-grid metrics compact" id="targetResults"></div>
             <div id="targetCallout" class="message"></div>
             <div class="chart-card">
+                <div class="chart-toolbar">
+                    <div>
+                        <strong>CVP curve explorer</strong>
+                        <span>Hover over the graph to inspect a volume point.</span>
+                    </div>
+                    <button type="button" class="chart-reset" id="chartReset">Reset view</button>
+                </div>
                 <svg id="cvpChart" viewBox="0 0 800 460" xmlns="http://www.w3.org/2000/svg"></svg>
-                <div class="legend">
-                    <span><span class="swatch blue"></span> Total revenue</span>
-                    <span><span class="swatch red"></span> Total cost</span>
-                    <span><span class="swatch green"></span> Fixed cost line</span>
+                <div class="chart-tooltip" id="chartTooltip" role="status" aria-live="polite"></div>
+                <div class="legend" aria-label="Chart series visibility">
+                    <button type="button" class="legend-toggle active" data-series="revenue"><span class="swatch blue"></span> Total revenue</button>
+                    <button type="button" class="legend-toggle active" data-series="cost"><span class="swatch red"></span> Total cost</button>
+                    <button type="button" class="legend-toggle active" data-series="fixed"><span class="swatch green"></span> Fixed cost line</button>
                 </div>
             </div>
         </section>
 
-        <section class="panel">
+        <section id="decision" class="panel section-panel">
             <div class="section-heading">
                 <h3>Decision summary</h3>
             </div>
             <div id="decisionSummary" class="message message-info"></div>
         </section>
 
-        <section class="panel">
+        <section id="scenario" class="panel section-panel">
             <div class="section-heading">
                 <h3>What-if scenario</h3>
             </div>
@@ -398,6 +417,8 @@
             }
         }
 
+        const chartState = { revenue: true, cost: true, fixed: true };
+
         function drawChart(sellingPrice, variableCost, fixedCosts, result, expectedUnits) {
             const svg = document.getElementById('cvpChart');
             const W = 800, H = 460;
@@ -442,9 +463,9 @@
                 ${grid}
                 <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + plotH}" stroke="#4A5876" stroke-width="1.5"/>
                 <line x1="${margin.left}" y1="${margin.top + plotH}" x2="${margin.left + plotW}" y2="${margin.top + plotH}" stroke="#4A5876" stroke-width="1.5"/>
-                <path d="${fixedLine}" stroke="#1F8A70" stroke-width="2" stroke-dasharray="6,4" fill="none"/>
-                <path d="${costLine}" stroke="#C6473C" stroke-width="2.5" fill="none"/>
-                <path d="${revLine}" stroke="#2D5DA1" stroke-width="2.5" fill="none"/>
+                <path class="chart-series chart-fixed" d="${fixedLine}" stroke="#1F8A70" stroke-width="2" stroke-dasharray="6,4" fill="none"/>
+                <path class="chart-series chart-cost" d="${costLine}" stroke="#C6473C" stroke-width="2.5" fill="none"/>
+                <path class="chart-series chart-revenue" d="${revLine}" stroke="#2D5DA1" stroke-width="2.5" fill="none"/>
                 <line x1="${breakEvenX}" y1="${breakEvenY}" x2="${breakEvenX}" y2="${margin.top + plotH}" stroke="#1B2A4A" stroke-width="1" stroke-dasharray="3,3"/>
                 <line x1="${margin.left}" y1="${breakEvenY}" x2="${breakEvenX}" y2="${breakEvenY}" stroke="#1B2A4A" stroke-width="1" stroke-dasharray="3,3"/>
                 <circle cx="${breakEvenX}" cy="${breakEvenY}" r="5" fill="#1B2A4A"/>
@@ -452,8 +473,91 @@
                 <circle cx="${expectedUnitsX}" cy="${expectedRevenueY}" r="5" fill="#7A4FA3"/>
                 <text x="${expectedUnitsX}" y="${expectedRevenueY - 14}" text-anchor="middle" font-size="12" font-weight="700" fill="#7A4FA3">Expected</text>
                 <text x="${margin.left + plotW / 2}" y="${H - 6}" text-anchor="middle" font-size="12" fill="#4A5876">Units of sales</text>
+                <line class="chart-crosshair" id="chartCrosshair" x1="0" y1="${margin.top}" x2="0" y2="${margin.top + plotH}" stroke="#16263F" stroke-width="1" stroke-dasharray="4,4" opacity="0"/>
+                <rect id="chartHitArea" x="${margin.left}" y="${margin.top}" width="${plotW}" height="${plotH}" fill="transparent"/>
             `;
+            updateChartSeries();
+            bindChartHover(sellingPrice, variableCost, fixedCosts, maxUnits, margin, plotW);
         }
+
+        function updateChartSeries() {
+            Object.entries(chartState).forEach(([series, visible]) => {
+                const line = document.querySelector(`.chart-${series}`);
+                if (line) line.style.opacity = visible ? '1' : '0.12';
+            });
+        }
+
+        function bindChartHover(sellingPrice, variableCost, fixedCosts, maxUnits, margin, plotW) {
+            const svg = document.getElementById('cvpChart');
+            const hitArea = document.getElementById('chartHitArea');
+            const crosshair = document.getElementById('chartCrosshair');
+            const tooltip = document.getElementById('chartTooltip');
+            hitArea.addEventListener('mousemove', (event) => {
+                const point = svg.createSVGPoint();
+                point.x = event.clientX;
+                point.y = event.clientY;
+                const svgPoint = point.matrixTransform(svg.getScreenCTM().inverse());
+                const units = Math.max(0, Math.min(maxUnits, ((svgPoint.x - margin.left) / plotW) * maxUnits));
+                const revenue = units * sellingPrice;
+                const cost = fixedCosts + units * variableCost;
+                crosshair.setAttribute('x1', svgPoint.x);
+                crosshair.setAttribute('x2', svgPoint.x);
+                crosshair.style.opacity = '1';
+                tooltip.innerHTML = `<strong>${fmtUnits(units)} units</strong><span>Revenue: ${fmtMoney(revenue)}</span><span>Total cost: ${fmtMoney(cost)}</span><span>Profit: ${fmtMoney(revenue - cost)}</span>`;
+                tooltip.classList.add('visible');
+            });
+            hitArea.addEventListener('mouseleave', () => {
+                crosshair.style.opacity = '0';
+                tooltip.classList.remove('visible');
+            });
+        }
+
+        document.querySelectorAll('.legend-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const series = button.dataset.series;
+                chartState[series] = !chartState[series];
+                button.classList.toggle('active', chartState[series]);
+                updateChartSeries();
+            });
+        });
+
+        document.getElementById('chartReset').addEventListener('click', () => {
+            Object.keys(chartState).forEach(series => chartState[series] = true);
+            document.querySelectorAll('.legend-toggle').forEach(button => button.classList.add('active'));
+            updateChartSeries();
+        });
+
+        const navLinks = document.querySelectorAll('.section-link');
+        const sections = document.querySelectorAll('.section-panel');
+
+        function setActiveLink(id) {
+            navLinks.forEach(link => {
+                const active = link.getAttribute('href') === `#${id}`;
+                link.classList.toggle('active', active);
+            });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const sectionId = link.getAttribute('href').substring(1);
+                setActiveLink(sectionId);
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            const visible = entries
+                .filter(entry => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+            if (visible) {
+                setActiveLink(visible.target.id);
+            }
+        }, {
+            rootMargin: '-20% 0px -55% 0px',
+            threshold: [0.2, 0.5, 0.8]
+        });
+
+        sections.forEach(section => observer.observe(section));
 
         ['sellingPrice', 'variableCost', 'fixedCosts', 'targetProfit', 'expectedUnits'].forEach(id => {
             document.getElementById(id).addEventListener('input', renderCvp);
