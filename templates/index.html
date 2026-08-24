@@ -3,121 +3,468 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Accounting Software Module 4</title>
+    <title>Accounting Decision-Support System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Accounting Software Module 4</h1>
-            <p>Simple ledger, trial balance, and financial summary dashboard.</p>
-        </header>
-
-        <div class="actions">
-            <a class="button secondary" href="{{ url_for('reset_accounts') }}">Reset Ledger</a>
+    <header class="topbar">
+        <div class="container header-inner">
+            <div>
+                <p class="eyebrow">Module 4 | Group 4</p>
+                <h1>Accounting Decision-Support System</h1>
+            </div>
+            <a class="button button-secondary" href="{{ url_for('reset_accounts') }}">Reset Ledger</a>
         </div>
+    </header>
 
-        <section class="panel">
-            <h2>Add Journal Entry</h2>
-            <form method="post">
-                <div class="form-row">
-                    <label>Date</label>
-                    <input type="date" name="date" value="2026-08-01" required />
-                </div>
-                <div class="form-row">
-                    <label>Description</label>
-                    <input type="text" name="description" value="New transaction" required />
-                </div>
-                <div class="form-row dual">
-                    <div>
-                        <label>Debit Account</label>
-                        <select name="debit_account" required>
-                            {% for code, account in accounts.items() %}
-                            <option value="{{ code }}">{{ code }} - {{ account.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Credit Account</label>
-                        <select name="credit_account" required>
-                            {% for code, account in accounts.items() %}
-                            <option value="{{ code }}">{{ code }} - {{ account.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>Amount</label>
-                    <input type="number" name="amount" min="0.01" step="0.01" value="1000" required />
-                </div>
-                <button type="submit">Post Entry</button>
-            </form>
-        </section>
-
-        <section class="panel">
-            <h2>Chart of Accounts</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for code, account in accounts.items() %}
-                    <tr>
-                        <td>{{ code }}</td>
-                        <td>{{ account.name }}</td>
-                        <td>{{ account.type }}</td>
-                        <td>{{ '%.2f'|format(account.balance) }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-
-        <section class="panel">
-            <h2>Trial Balance</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Account</th>
-                        <th>Debit</th>
-                        <th>Credit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for code, row in trial_balance['balances'].items() %}
-                    <tr>
-                        <td>{{ row.name }}</td>
-                        <td>{{ '%.2f'|format(row.debit) }}</td>
-                        <td>{{ '%.2f'|format(row.credit) }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>Total</th>
-                        <th>{{ '%.2f'|format(trial_balance['total_debit']) }}</th>
-                        <th>{{ '%.2f'|format(trial_balance['total_credit']) }}</th>
-                    </tr>
-                </tfoot>
-            </table>
-        </section>
-
-        <section class="panel summary">
-            <h2>Financial Summary</h2>
-            <div class="summary-grid">
-                <div><strong>Revenue:</strong> {{ '%.2f'|format(financial_report['revenue']) }}</div>
-                <div><strong>Expenses:</strong> {{ '%.2f'|format(financial_report['expenses']) }}</div>
-                <div><strong>Net Income:</strong> {{ '%.2f'|format(financial_report['net_income']) }}</div>
-                <div><strong>Total Assets:</strong> {{ '%.2f'|format(financial_report['total_assets']) }}</div>
-                <div><strong>Total Liabilities:</strong> {{ '%.2f'|format(financial_report['total_liabilities']) }}</div>
-                <div><strong>Equity:</strong> {{ '%.2f'|format(financial_report['equity']) }}</div>
+    <main class="container">
+        <section class="hero panel">
+            <div>
+                <p class="eyebrow accent">Overview</p>
+                <h2>Cost, volume, and profit analysis with live accounting updates</h2>
+            </div>
+            <div class="hero-meta">
+                <span><strong>System status:</strong> Active</span>
+                <span><strong>Reporting:</strong> Trial balance + CVP</span>
             </div>
         </section>
-    </div>
+
+        <section class="two-column">
+            <div class="panel">
+                <div class="section-heading">
+                    <h3>Add journal entry</h3>
+                </div>
+                <form method="post" class="journal-form">
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Date</label>
+                            <input type="date" name="date" value="2026-08-01" required />
+                        </div>
+                        <div class="field wide">
+                            <label>Description</label>
+                            <input type="text" name="description" value="New transaction" required />
+                        </div>
+                        <div class="field">
+                            <label>Debit account</label>
+                            <select name="debit_account" required>
+                                {% for code, account in accounts.items() %}
+                                <option value="{{ code }}">{{ code }} - {{ account.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Credit account</label>
+                            <select name="credit_account" required>
+                                {% for code, account in accounts.items() %}
+                                <option value="{{ code }}">{{ code }} - {{ account.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Amount</label>
+                            <input type="number" name="amount" min="0.01" step="0.01" value="1000" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="button button-primary">Post entry</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="section-heading">
+                    <h3>CVP analysis</h3>
+                </div>
+                <div class="cvp-inputs">
+                    <div class="field">
+                        <label>Selling price</label>
+                        <input type="number" id="sellingPrice" value="50" min="0.01" step="1" />
+                    </div>
+                    <div class="field">
+                        <label>Variable cost</label>
+                        <input type="number" id="variableCost" value="30" min="0" step="1" />
+                    </div>
+                    <div class="field">
+                        <label>Fixed costs</label>
+                        <input type="number" id="fixedCosts" value="10000" min="0" step="500" />
+                    </div>
+                    <div class="field">
+                        <label>Target profit</label>
+                        <input type="number" id="targetProfit" value="5000" min="0" step="500" />
+                    </div>
+                    <div class="field">
+                        <label>Expected units</label>
+                        <input type="number" id="expectedUnits" value="600" min="0" step="10" />
+                    </div>
+                </div>
+                <div id="validationError" class="message message-warning" style="display:none;"></div>
+            </div>
+        </section>
+
+        <section class="summary-grid metrics" id="keyResults"></section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <h3>Financial summary</h3>
+            </div>
+            <div class="summary-grid summary-boxes">
+                <div class="summary-box">
+                    <span>Revenue</span>
+                    <strong>{{ '%.2f'|format(financial_report['revenue']) }}</strong>
+                </div>
+                <div class="summary-box">
+                    <span>Expenses</span>
+                    <strong>{{ '%.2f'|format(financial_report['expenses']) }}</strong>
+                </div>
+                <div class="summary-box success">
+                    <span>Net income</span>
+                    <strong>{{ '%.2f'|format(financial_report['net_income']) }}</strong>
+                </div>
+                <div class="summary-box">
+                    <span>Total assets</span>
+                    <strong>{{ '%.2f'|format(financial_report['total_assets']) }}</strong>
+                </div>
+                <div class="summary-box">
+                    <span>Total liabilities</span>
+                    <strong>{{ '%.2f'|format(financial_report['total_liabilities']) }}</strong>
+                </div>
+                <div class="summary-box">
+                    <span>Equity</span>
+                    <strong>{{ '%.2f'|format(financial_report['equity']) }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="two-column table-layout">
+            <div class="panel">
+                <div class="section-heading">
+                    <h3>Chart of accounts</h3>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for code, account in accounts.items() %}
+                            <tr>
+                                <td>{{ code }}</td>
+                                <td>{{ account.name }}</td>
+                                <td>{{ account.type }}</td>
+                                <td class="number">{{ '%.2f'|format(account.balance) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="section-heading">
+                    <h3>Trial balance</h3>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Account</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for code, row in trial_balance['balances'].items() %}
+                            <tr>
+                                <td>{{ row.name }}</td>
+                                <td class="number">{{ '%.2f'|format(row.debit) }}</td>
+                                <td class="number">{{ '%.2f'|format(row.credit) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total</th>
+                                <th class="number">{{ '%.2f'|format(trial_balance['total_debit']) }}</th>
+                                <th class="number">{{ '%.2f'|format(trial_balance['total_credit']) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <h3>Break-even and target analysis</h3>
+            </div>
+            <div class="summary-grid metrics compact" id="targetResults"></div>
+            <div id="targetCallout" class="message"></div>
+            <div class="chart-card">
+                <svg id="cvpChart" viewBox="0 0 800 460" xmlns="http://www.w3.org/2000/svg"></svg>
+                <div class="legend">
+                    <span><span class="swatch blue"></span> Total revenue</span>
+                    <span><span class="swatch red"></span> Total cost</span>
+                    <span><span class="swatch green"></span> Fixed cost line</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <h3>Decision summary</h3>
+            </div>
+            <div id="decisionSummary" class="message message-info"></div>
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <h3>What-if scenario</h3>
+            </div>
+            <div class="scenario-grid">
+                <div class="field">
+                    <label>Scenario selling price</label>
+                    <input type="number" id="scenPrice" min="0.01" step="1" />
+                </div>
+                <div class="field">
+                    <label>Scenario variable cost</label>
+                    <input type="number" id="scenVar" min="0" step="1" />
+                </div>
+                <div class="field">
+                    <label>Scenario fixed costs</label>
+                    <input type="number" id="scenFixed" min="0" step="500" />
+                </div>
+            </div>
+            <table class="scenario-table" id="whatifTable"></table>
+            <div id="whatifResult" class="message"></div>
+        </section>
+    </main>
+
+    <script>
+        function fmtMoney(n) {
+            return '$' + n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function fmtMoney2(n) {
+            return '$' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function fmtUnits(n) {
+            return n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function fmtPct(n) {
+            return n.toFixed(1) + '%';
+        }
+
+        function calculateCVP(sellingPrice, variableCost, fixedCosts, targetProfit, expectedUnits) {
+            const cmPerUnit = sellingPrice - variableCost;
+            if (cmPerUnit <= 0) return null;
+
+            const cmRatio = cmPerUnit / sellingPrice;
+            const beUnits = fixedCosts / cmPerUnit;
+            const beSales = fixedCosts / cmRatio;
+            const targetUnits = (fixedCosts + targetProfit) / cmPerUnit;
+            const targetSales = (fixedCosts + targetProfit) / cmRatio;
+            const expectedProfit = (expectedUnits * cmPerUnit) - fixedCosts;
+            const mosUnits = expectedUnits - beUnits;
+            const mosDollars = mosUnits * sellingPrice;
+            const mosRatio = expectedUnits > 0 ? (mosUnits / expectedUnits) * 100 : 0;
+
+            return { cmPerUnit, cmRatio, beUnits, beSales, targetUnits, targetSales, expectedProfit, mosUnits, mosDollars, mosRatio };
+        }
+
+        function renderCvp() {
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value) || 0;
+            const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
+            const fixedCosts = parseFloat(document.getElementById('fixedCosts').value) || 0;
+            const targetProfit = parseFloat(document.getElementById('targetProfit').value) || 0;
+            const expectedUnits = parseFloat(document.getElementById('expectedUnits').value) || 0;
+            const errBox = document.getElementById('validationError');
+
+            if (sellingPrice <= variableCost) {
+                errBox.style.display = 'block';
+                errBox.textContent = 'Warning: selling price must be greater than variable cost to calculate a valid break-even point.';
+                return;
+            }
+
+            errBox.style.display = 'none';
+            const result = calculateCVP(sellingPrice, variableCost, fixedCosts, targetProfit, expectedUnits);
+            if (!result) {
+                return;
+            }
+
+            const profitClass = result.expectedProfit >= 0 ? 'success' : 'danger';
+            document.getElementById('keyResults').innerHTML = `
+                <div class="metric-card ${profitClass}">
+                    <span>Expected profit</span>
+                    <strong>${fmtMoney(result.expectedProfit)}</strong>
+                    <small>${result.expectedProfit >= 0 ? 'Profitable' : 'Loss'} position</small>
+                </div>
+                <div class="metric-card">
+                    <span>Break-even point</span>
+                    <strong>${fmtUnits(result.beUnits)} units</strong>
+                    <small>${fmtMoney(result.beSales)}</small>
+                </div>
+                <div class="metric-card">
+                    <span>Contribution margin ratio</span>
+                    <strong>${fmtPct(result.cmRatio * 100)}</strong>
+                    <small>Per-unit margin ${fmtMoney2(result.cmPerUnit)}</small>
+                </div>
+                <div class="metric-card">
+                    <span>Margin of safety</span>
+                    <strong>${fmtUnits(result.mosUnits)} units</strong>
+                    <small>${fmtPct(result.mosRatio)}</small>
+                </div>
+            `;
+
+            const requiredGap = result.targetUnits - expectedUnits;
+            document.getElementById('targetResults').innerHTML = `
+                <div class="metric-card">
+                    <span>Target profit</span>
+                    <strong>${fmtMoney(targetProfit)}</strong>
+                    <small>Required sales goal</small>
+                </div>
+                <div class="metric-card">
+                    <span>Target units</span>
+                    <strong>${fmtUnits(result.targetUnits)} units</strong>
+                    <small>To reach target</small>
+                </div>
+                <div class="metric-card">
+                    <span>Target sales</span>
+                    <strong>${fmtMoney(result.targetSales)}</strong>
+                    <small>Required revenue</small>
+                </div>
+            `;
+
+            const callout = document.getElementById('targetCallout');
+            if (requiredGap <= 0) {
+                callout.className = 'message message-success';
+                callout.textContent = `Expected sales of ${fmtUnits(expectedUnits)} units meet or exceed the ${fmtUnits(result.targetUnits)} units needed to reach the ${fmtMoney(targetProfit)} target profit.`;
+            } else {
+                callout.className = 'message message-warning';
+                callout.textContent = `Expected sales of ${fmtUnits(expectedUnits)} units are ${fmtUnits(requiredGap)} units below the ${fmtUnits(result.targetUnits)} units needed to reach the ${fmtMoney(targetProfit)} target profit.`;
+            }
+
+            const summary = document.getElementById('decisionSummary');
+            summary.className = `message ${result.expectedProfit >= 0 ? 'message-success' : 'message-warning'}`;
+            summary.textContent = `Expected sales of ${fmtUnits(expectedUnits)} units are ${result.expectedProfit >= 0 ? 'above' : 'below'} the break-even point of ${fmtUnits(result.beUnits)} units. The business is expected to generate ${fmtMoney(Math.abs(result.expectedProfit))} in ${result.expectedProfit >= 0 ? 'profit' : 'loss'} under the current assumptions.`;
+
+            drawChart(sellingPrice, variableCost, fixedCosts, result, expectedUnits);
+            renderWhatIf(sellingPrice, variableCost, fixedCosts, targetProfit, expectedUnits, result);
+        }
+
+        function renderWhatIf(sellingPrice, variableCost, fixedCosts, targetProfit, expectedUnits, currentResult) {
+            const scenPrice = parseFloat(document.getElementById('scenPrice').value) || sellingPrice;
+            const scenVar = parseFloat(document.getElementById('scenVar').value) || variableCost;
+            const scenFixed = parseFloat(document.getElementById('scenFixed').value) || fixedCosts;
+            const scenarioResult = calculateCVP(scenPrice, scenVar, scenFixed, targetProfit, expectedUnits);
+            const table = document.getElementById('whatifTable');
+            const resultBox = document.getElementById('whatifResult');
+
+            if (!scenarioResult) {
+                table.innerHTML = '';
+                resultBox.className = 'message message-warning';
+                resultBox.textContent = 'Scenario selling price must be greater than scenario variable cost.';
+                return;
+            }
+
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current</th>
+                        <th>Scenario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Contribution margin/unit</td><td>${fmtMoney2(currentResult.cmPerUnit)}</td><td>${fmtMoney2(scenarioResult.cmPerUnit)}</td></tr>
+                    <tr><td>Contribution margin ratio</td><td>${fmtPct(currentResult.cmRatio * 100)}</td><td>${fmtPct(scenarioResult.cmRatio * 100)}</td></tr>
+                    <tr><td>Break-even units</td><td>${fmtUnits(currentResult.beUnits)}</td><td>${fmtUnits(scenarioResult.beUnits)}</td></tr>
+                    <tr><td>Expected profit</td><td>${fmtMoney(currentResult.expectedProfit)}</td><td>${fmtMoney(scenarioResult.expectedProfit)}</td></tr>
+                    <tr><td>Target profit units</td><td>${fmtUnits(currentResult.targetUnits)}</td><td>${fmtUnits(scenarioResult.targetUnits)}</td></tr>
+                </tbody>
+            `;
+
+            const diff = scenarioResult.expectedProfit - currentResult.expectedProfit;
+            if (diff > 0) {
+                resultBox.className = 'message message-success';
+                resultBox.textContent = `The scenario increases expected profit by ${fmtMoney(diff)}.`;
+            } else if (diff < 0) {
+                resultBox.className = 'message message-warning';
+                resultBox.textContent = `The scenario decreases expected profit by ${fmtMoney(Math.abs(diff))}.`;
+            } else {
+                resultBox.className = 'message message-info';
+                resultBox.textContent = 'The scenario leaves expected profit unchanged.';
+            }
+        }
+
+        function drawChart(sellingPrice, variableCost, fixedCosts, result, expectedUnits) {
+            const svg = document.getElementById('cvpChart');
+            const W = 800, H = 460;
+            const margin = { top: 20, right: 30, bottom: 50, left: 80 };
+            const plotW = W - margin.left - margin.right;
+            const plotH = H - margin.top - margin.bottom;
+
+            let maxUnits = Math.max(result.beUnits, expectedUnits, result.targetUnits) * 1.4;
+            if (!isFinite(maxUnits) || maxUnits <= 0) maxUnits = 100;
+
+            const revAtMax = maxUnits * sellingPrice;
+            const costAtMax = fixedCosts + maxUnits * variableCost;
+            let maxDollars = Math.max(revAtMax, costAtMax) * 1.1;
+            if (!isFinite(maxDollars) || maxDollars <= 0) maxDollars = 1000;
+
+            const xScale = (u) => margin.left + (u / maxUnits) * plotW;
+            const yScale = (d) => margin.top + plotH - (d / maxDollars) * plotH;
+
+            let grid = '';
+            for (let i = 0; i <= 5; i++) {
+                const gy = margin.top + (plotH / 5) * i;
+                const val = maxDollars - (maxDollars / 5) * i;
+                grid += `<line x1="${margin.left}" y1="${gy}" x2="${margin.left + plotW}" y2="${gy}" stroke="#E3E7ED" stroke-width="1"/>`;
+                grid += `<text x="${margin.left - 10}" y="${gy + 4}" text-anchor="end" font-size="11" fill="#4A5876">$${Math.round(val).toLocaleString()}</text>`;
+            }
+            for (let i = 0; i <= 5; i++) {
+                const gx = margin.left + (plotW / 5) * i;
+                const val = (maxUnits / 5) * i;
+                grid += `<text x="${gx}" y="${margin.top + plotH + 22}" text-anchor="middle" font-size="11" fill="#4A5876">${Math.round(val).toLocaleString()}</text>`;
+            }
+
+            const revLine = `M ${xScale(0)} ${yScale(0)} L ${xScale(maxUnits)} ${yScale(revAtMax)}`;
+            const costLine = `M ${xScale(0)} ${yScale(fixedCosts)} L ${xScale(maxUnits)} ${yScale(costAtMax)}`;
+            const fixedLine = `M ${xScale(0)} ${yScale(fixedCosts)} L ${xScale(maxUnits)} ${yScale(fixedCosts)}`;
+
+            const breakEvenX = xScale(result.beUnits);
+            const breakEvenY = yScale(result.beSales);
+            const expectedRevenueY = yScale(expectedUnits * sellingPrice);
+            const expectedUnitsX = xScale(expectedUnits);
+
+            svg.innerHTML = `
+                ${grid}
+                <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + plotH}" stroke="#4A5876" stroke-width="1.5"/>
+                <line x1="${margin.left}" y1="${margin.top + plotH}" x2="${margin.left + plotW}" y2="${margin.top + plotH}" stroke="#4A5876" stroke-width="1.5"/>
+                <path d="${fixedLine}" stroke="#1F8A70" stroke-width="2" stroke-dasharray="6,4" fill="none"/>
+                <path d="${costLine}" stroke="#C6473C" stroke-width="2.5" fill="none"/>
+                <path d="${revLine}" stroke="#2D5DA1" stroke-width="2.5" fill="none"/>
+                <line x1="${breakEvenX}" y1="${breakEvenY}" x2="${breakEvenX}" y2="${margin.top + plotH}" stroke="#1B2A4A" stroke-width="1" stroke-dasharray="3,3"/>
+                <line x1="${margin.left}" y1="${breakEvenY}" x2="${breakEvenX}" y2="${breakEvenY}" stroke="#1B2A4A" stroke-width="1" stroke-dasharray="3,3"/>
+                <circle cx="${breakEvenX}" cy="${breakEvenY}" r="5" fill="#1B2A4A"/>
+                <text x="${breakEvenX + 12}" y="${breakEvenY - 12}" font-size="12" font-weight="700" fill="#1B2A4A">Break-even</text>
+                <circle cx="${expectedUnitsX}" cy="${expectedRevenueY}" r="5" fill="#7A4FA3"/>
+                <text x="${expectedUnitsX}" y="${expectedRevenueY - 14}" text-anchor="middle" font-size="12" font-weight="700" fill="#7A4FA3">Expected</text>
+                <text x="${margin.left + plotW / 2}" y="${H - 6}" text-anchor="middle" font-size="12" fill="#4A5876">Units of sales</text>
+            `;
+        }
+
+        ['sellingPrice', 'variableCost', 'fixedCosts', 'targetProfit', 'expectedUnits'].forEach(id => {
+            document.getElementById(id).addEventListener('input', renderCvp);
+        });
+        ['scenPrice', 'scenVar', 'scenFixed'].forEach(id => {
+            const el = document.getElementById(id);
+            el.value = (id === 'scenPrice') ? '50' : (id === 'scenVar') ? '30' : '10000';
+            el.addEventListener('input', renderCvp);
+        });
+
+        renderCvp();
+    </script>
 </body>
 </html>
