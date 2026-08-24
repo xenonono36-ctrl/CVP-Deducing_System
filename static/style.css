@@ -21,7 +21,7 @@
 
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Aptos", "Segoe UI", sans-serif;
     background: var(--paper);
     color: var(--ink);
     line-height: 1.5;
@@ -201,6 +201,7 @@ input, select {
     border-radius: 10px;
     padding: 10px 12px;
     font-size: 1rem;
+    font-family: inherit;
     background: white;
     color: var(--ink);
 }
