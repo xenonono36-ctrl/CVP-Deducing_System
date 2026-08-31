@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Discrete Math Exam Conquest</title>
+        <style>
+            :root {
+                --bg: #0f172a;
+                --card-bg: #1e293b;
+                --card-hover: #334155;
+                --accent: #38bdf8;
+                --accent-glow: rgba(56, 189, 248, 0.35);
+                --success: #4ade80;
+                --gold: #facc15;
+                --text: #f8fafc;
+                --text-muted: #94a3b8;
+                --border: #475569;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            }
+
+            body {
+                background-color: var(--bg);
+                color: var(--text);
+                line-height: 1.6;
+                padding: 20px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* HUD Header */
+            header {
+                background: linear-gradient(135deg, #1e1b4b, #0f172a);
+                border: 2px solid var(--accent);
+                box-shadow: 0 0 15px var(--accent-glow);
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 24px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .player-stats h1 {
+                font-size: 1.8rem;
+                color: var(--accent);
+                letter-spacing: 1px;
+            }
+
+            .player-stats p {
+                color: var(--text-muted);
+                font-size: 0.95rem;
+            }
+
+            .hud-meters {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                min-width: 280px;
+            }
+
+            .meter-label {
+                display: flex;
+                justify-content: space-between;
+                font-weight: bold;
+                font-size: 0.85rem;
+            }
+
+            .progress-bar {
+                width: 100%;
+                height: 16px;
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .progress-fill {
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(90deg, #3b82f6, var(--accent));
+                transition: width 0.4s ease;
+            }
+
+            .timer-box {
+                background: #020617;
+                border: 1px solid var(--gold);
+                padding: 10px 16px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .timer-box .time {
+                font-size: 1.4rem;
+                font-weight: bold;
+                color: var(--gold);
+                font-family: monospace;
+            }
+
+            /* Navigation Tabs */
+            nav {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+                overflow-x: auto;
+            }
+
+            .tab-btn {
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                color: var(--text-muted);
+                padding: 12px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: bold;
+                transition: all 0.2s ease;
+                white-space: nowrap;
+            }
+
+            .tab-btn:hover {
+                background: var(--card-hover);
+                color: var(--text);
+            }
+
+            .tab-btn.active {
+                background: var(--accent);
+                color: #0f172a;
+                border-color: var(--accent);
+                box-shadow: 0 0 10px var(--accent-glow);
+            }
+
+            /* Tab Content */
+            .tab-content {
+                display: none;
+            }
+
+            .tab-content.active {
+                display: block;
+            }
+
+            /* Schedule Quest Cards */
+            .day-section {
+                margin-bottom: 28px;
+            }
+
+            .day-title {
+                font-size: 1.3rem;
+                color: var(--gold);
+                margin-bottom: 12px;
+                border-bottom: 2px solid var(--border);
+                padding-bottom: 6px;
+            }
+
+            .quest-card {
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 14px 18px;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                transition: transform 0.1s ease;
+            }
+
+            .quest-card:hover {
+                border-color: var(--accent);
+            }
+
+            .quest-card.completed {
+                opacity: 0.6;
+                border-color: var(--success);
+                background: #064e3b22;
+            }
+
+            .quest-card.completed .quest-title {
+                text-decoration: line-through;
+            }
+
+            .checkbox-custom {
+                width: 22px;
+                height: 22px;
+                cursor: pointer;
+                accent-color: var(--accent);
+            }
+
+            .quest-info {
+                flex-grow: 1;
+            }
+
+            .quest-time {
+                font-size: 0.8rem;
+                color: var(--accent);
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            .quest-title {
+                font-weight: bold;
+                font-size: 1rem;
+            }
+
+            .quest-desc {
+                font-size: 0.88rem;
+                color: var(--text-muted);
+            }
+
+            .xp-badge {
+                background: rgba(250, 204, 21, 0.15);
+                color: var(--gold);
+                border: 1px solid var(--gold);
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                font-weight: bold;
+            }
+
+            /* Spellbook / Formulas */
+            .spell-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 16px;
+            }
+
+            .spell-card {
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 16px;
+            }
+
+            .spell-card h3 {
+                color: var(--accent);
+                margin-bottom: 10px;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 4px;
+            }
+
+            .formula-box {
+                background: #090d16;
+                border-left: 3px solid var(--gold);
+                padding: 8px 12px;
+                margin: 8px 0;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 0.9rem;
+                color: #e2e8f0;
+                overflow-x: auto;
+            }
+
+            /* Interactive Boss Arena (Quiz) */
+            .arena-container {
+                background: var(--card-bg);
+                border: 2px solid var(--accent);
+                border-radius: 12px;
+                padding: 24px;
+                text-align: center;
+            }
+
+            .quiz-question {
+                font-size: 1.2rem;
+                margin-bottom: 20px;
+                font-weight: bold;
+            }
+
+            .quiz-options {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            @media (max-width: 600px) {
+                .quiz-options {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .option-btn {
+                background: #0f172a;
+                border: 1px solid var(--border);
+                color: var(--text);
+                padding: 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.95rem;
+                transition: all 0.2s;
+            }
+
+            .option-btn:hover {
+                border-color: var(--accent);
+                background: var(--card-hover);
+            }
+
+            .quiz-feedback {
+                min-height: 24px;
+                font-weight: bold;
+                margin-top: 10px;
+            }
+
+            /* Loot / Resources */
+            .resource-list {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .resource-item {
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                padding: 14px 18px;
+                border-radius: 8px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-decoration: none;
+                color: var(--text);
+                transition: background 0.2s;
+            }
+
+            .resource-item:hover {
+                background: var(--card-hover);
+                border-color: var(--accent);
+            }
+
+            .item-tag {
+                background: #0284c7;
+                color: white;
+                padding: 4px 10px;
+                border-radius: 6px;
+                font-size: 0.8rem;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <header>
+            <div class="player-stats">
+                <h1>DISCRETE MATH CONQUEST</h1>
+                <p>Target: Ace Final Exam | Monday, Aug 31 @ 2:30 PM</p>
+            </div>
+
+            <div class="hud-meters">
+                <div class="meter-label">
+                    <span>QUEST PROGRESS</span>
+                    <span id="xp-text">0 / 1500 XP</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="timer-box">
+                <div style="font-size: 0.75rem; color: var(--text-muted);">COUNTDOWN TO EXAM</div>
+                <div class="time" id="countdown">--:--:--</div>
+            </div>
+        </header>
+
+        <nav>
+            <button class="tab-btn active" onclick="switchTab('quests')">📜 Quest Schedule</button>
+            <button class="tab-btn" onclick="switchTab('spellbook')">📖 Formula Vault</button>
+            <button class="tab-btn" onclick="switchTab('arena')">⚔️ Boss Practice Arena</button>
+            <button class="tab-btn" onclick="switchTab('loot')">💎 Loot & Resources</button>
+        </nav>
+
+        <div id="quests" class="tab-content active">
+
+            <div class="day-section">
+                <div class="day-title">Saturday, Aug 29 – Act I: Number Theory & Pigeonholes</div>
+
+                <div class="quest-card" id="q1">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q1', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">08:00 AM – 10:30 AM</div>
+                        <div class="quest-title">4.1 & 4.3: Divisibility, Prime & GCD Mastery</div>
+                        <div class="quest-desc">Division Alg, Euclidean Alg, & Extended Euclidean Alg (Bézout's
+                            identity).</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q2">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q2', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">10:45 AM – 01:15 PM</div>
+                        <div class="quest-title">4.4 & 4.5: Congruences, CRT & Pseudoprimes</div>
+                        <div class="quest-desc">Modular inverses, Fermat's Little Theorem, and Chinese Remainder Theorem
+                            systems.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q3">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q3', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">02:15 PM – 04:30 PM</div>
+                        <div class="quest-title">4.6: Cryptography & RSA Pipeline</div>
+                        <div class="quest-desc">Shift/affine ciphers, key generation, encryption ($C=M^e \bmod n$) and
+                            decryption.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q4">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q4', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">04:45 PM – 06:15 PM</div>
+                        <div class="quest-title">6.2: Pigeonhole Principle Mechanics</div>
+                        <div class="quest-desc">Generalized Pigeonhole Principle ($\lceil N/k \rceil$) and existence
+                            proofs.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q5">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q5', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">07:30 PM – 10:30 PM</div>
+                        <div class="quest-title">Chapter 4 & 6 Problem Grind</div>
+                        <div class="quest-desc">Solve odd-numbered problems in textbook sections 4.3, 4.4, 4.6, and 6.2.
+                        </div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title">Sunday, Aug 30 – Act II: Graph Theory & Trees</div>
+
+                <div class="quest-card" id="q6">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q6', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">08:00 AM – 10:30 AM</div>
+                        <div class="quest-title">10.1 – 10.3: Graph Fundamentals & Matrices</div>
+                        <div class="quest-desc">Handshaking Lemma, Adjacency/Incidence matrices, and Isomorphism
+                            invariants.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q7">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q7', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">10:45 AM – 01:15 PM</div>
+                        <div class="quest-title">10.4 – 10.5: Connectivity, Euler & Hamilton</div>
+                        <div class="quest-desc">Strong vs. weak connectivity, Euler circuit conditions vs. Hamilton
+                            paths.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q8">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q8', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">02:15 PM – 04:30 PM</div>
+                        <div class="quest-title">11.1 – 11.2: Trees & Huffman Coding</div>
+                        <div class="quest-desc">Full $m$-ary tree properties, leaves formula, and building Huffman
+                            coding trees.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q9">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q9', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">04:45 PM – 06:30 PM</div>
+                        <div class="quest-title">11.3: Traversals & Expression Notations</div>
+                        <div class="quest-desc">Preorder, Inorder, Postorder traversals; Infix, Prefix, and Postfix
+                            conversions.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q10">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q10', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">07:30 PM – 10:30 PM</div>
+                        <div class="quest-title">Chapter 10 & 11 Skill Verification</div>
+                        <div class="quest-desc">Construct 3 Huffman trees from scratch and solve graph traversal
+                            exercises.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title">Monday, Aug 31 – Act III: Final Boss Battle</div>
+
+                <div class="quest-card" id="q11">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q11', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">08:00 AM – 10:30 AM</div>
+                        <div class="quest-title">Timed Mock Exam Run</div>
+                        <div class="quest-desc">Solve selected textbook problems across all chapters without consulting
+                            notes.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+
+                <div class="quest-card" id="q12">
+                    <input type="checkbox" class="checkbox-custom" onchange="toggleQuest('q12', 100)">
+                    <div class="quest-info">
+                        <div class="quest-time">10:30 AM – 11:30 AM</div>
+                        <div class="quest-title">Error Correction & Quick Formula Review</div>
+                        <div class="quest-desc">Patch knowledge gaps from the mock exam and review edge-case
+                            definitions.</div>
+                    </div>
+                    <span class="xp-badge">+100 XP</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="spellbook" class="tab-content">
+            <div class="spell-grid">
+
+                <div class="spell-card">
+                    <h3>Bézout's Identity & Inverse</h3>
+                    <p>For non-zero $a, b$, integers $s, t$ exist such that:</p>
+                    <div class="formula-box">gcd(a, b) = s·a + t·b</div>
+                    <p>Use Extended Euclidean Alg to find inverse $x$ where $a·x \equiv 1 \pmod m$.</p>
+                </div>
+
+                <div class="spell-card">
+                    <h3>Fermat's Little Theorem</h3>
+                    <p>If $p$ is prime and $p \nmid a$:</p>
+                    <div class="formula-box">a^(p-1) ≡ 1 (mod p)</div>
+                    <div class="formula-box">a^p ≡ a (mod p)</div>
+                </div>
+
+                <div class="spell-card">
+                    <h3>RSA Encryption Protocol</h3>
+                    <p>Key Generation & Ciphering steps:</p>
+                    <div class="formula-box">n = p · q</div>
+                    <div class="formula-box">φ(n) = (p - 1)(q - 1)</div>
+                    <div class="formula-box">d · e ≡ 1 (mod φ(n))</div>
+                    <div class="formula-box">Enc: C = M^e mod n | Dec: M = C^d mod n</div>
+                </div>
+
+                <div class="spell-card">
+                    <h3>Generalized Pigeonhole</h3>
+                    <p>If $N$ items go into $k$ boxes, at least 1 box gets:</p>
+                    <div class="formula-box">⌈ N / k ⌉ objects</div>
+                </div>
+
+                <div class="spell-card">
+                    <h3>Handshaking Lemma</h3>
+                    <p>Sum of vertex degrees in undirected graph:</p>
+                    <div class="formula-box">Σ deg(v) = 2 · |E|</div>
+                    <p><em>Key Note:</em> An even number of vertices have odd degrees.</p>
+                </div>
+
+                <div class="spell-card">
+                    <h3>Eulerian Conditions</h3>
+                    <p>For connected graphs:</p>
+                    <div class="formula-box">Euler Circuit: ALL vertices have EVEN degree</div>
+                    <div class="formula-box">Euler Path: EXACTLY 2 vertices have ODD degree</div>
+                </div>
+
+                <div class="spell-card">
+                    <h3>Full m-ary Tree Formulas</h3>
+                    <p>Vertices ($n$), Internal nodes ($i$), Leaves ($l$):</p>
+                    <div class="formula-box">n = m · i + 1</div>
+                    <div class="formula-box">l = (m - 1)i + 1</div>
+                </div>
+
+                <div class="spell-card">
+                    <h3>Tree Traversals</h3>
+                    <p>Standard node processing order:</p>
+                    <div class="formula-box">Preorder: Root → Left → Right</div>
+                    <div class="formula-box">Inorder: Left → Root → Right</div>
+                    <div class="formula-box">Postorder: Left → Right → Root</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="arena" class="tab-content">
+            <div class="arena-container">
+                <h2 style="color: var(--gold); margin-bottom: 10px;">WARM-UP BOSS ARENA</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Test your conceptual readiness before the
+                    exam!</p>
+
+                <div id="quiz-box">
+                    <div class="quiz-question" id="q-text">Loading question...</div>
+                    <div class="quiz-options" id="q-options"></div>
+                    <div class="quiz-feedback" id="q-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loot" class="tab-content">
+            <div class="resource-list">
+
+                <a class="resource-item" href="https://www.youtube me.com" target="_blank">
+                    <div>
+                        <strong>Kimberly Brehm – Discrete Math 1 & 2</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Matches Kenneth Rosen textbook
+                            chapter by chapter (Ch 4, 10, 11).</div>
+                    </div>
+                    <span class="item-tag">Video Playlist</span>
+                </a>
+
+                <a class="resource-item" href="https://www.youtube.com" target="_blank">
+                    <div>
+                        <strong>Neso Academy – Graph Theory & Modular Arithmetic</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Clean step-by-step visual proofs for
+                            RSA, CRT, & Isomorphisms.</div>
+                    </div>
+                    <span class="item-tag">Video Playlist</span>
+                </a>
+
+                <a class="resource-item" href="https://www.youtube.com" target="_blank">
+                    <div>
+                        <strong>TrevTutor – Discrete Math II</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Worked practice examples for Huffman
+                            Coding & Tree Traversals.</div>
+                    </div>
+                    <span class="item-tag">Practice Videos</span>
+                </a>
+
+                <a class="resource-item" href="https://visualgo.net/en" target="_blank">
+                    <div>
+                        <strong>VisuAlgo Interactive Visualizers</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Interactive animations for BSTs, Tree
+                            Traversals & Graphs.</div>
+                    </div>
+                    <span class="item-tag">Interactive Tool</span>
+                </a>
+
+            </div>
+        </div>
+
+        <script>
+            // Tab Switcher
+            function switchTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+                document.getElementById(tabId).classList.add('active');
+                event.currentTarget.classList.add('active');
+            }
+
+            // Quest & XP Logic
+            let currentXP = 0;
+            const maxXP = 1200;
+
+            function toggleQuest(cardId, xpValue) {
+                const card = document.getElementById(cardId);
+                const checkbox = card.querySelector('input');
+
+                if (checkbox.checked) {
+                    card.classList.add('completed');
+                    currentXP += xpValue;
+                } else {
+                    card.classList.remove('completed');
+                    currentXP -= xpValue;
+                }
+
+                updateXP();
+            }
+
+            function updateXP() {
+                document.getElementById('xp-text').innerText = `${currentXP} / ${maxXP} XP`;
+                const percentage = Math.min(100, Math.max(0, (currentXP / maxXP) * 100));
+                document.getElementById('progress-fill').style.width = `${percentage}%`;
+            }
+
+            // Countdown Timer
+            const examDate = new Date("August 31, 2026 14:30:00").getTime();
+
+            function updateTimer() {
+                const now = new Date().getTime();
+                const distance = examDate - now;
+
+                if (distance < 0) {
+                    document.getElementById("countdown").innerText = "EXAM IN PROGRESS";
+                    return;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + Math.floor(distance / (1000 * 60 * 60 * 24)) * 24;
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("countdown").innerText =
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+            setInterval(updateTimer, 1000);
+            updateTimer();
+
+            // Quiz Questions Data
+            const questions = [
+                {
+                    q: "In an undirected graph, 5 vertices have degree 4 and 2 vertices have degree 3. How many edges does the graph have?",
+                    options: ["13 edges", "26 edges", "12 edges", "14 edges"],
+                    correct: 0,
+                    exp: "Sum of degrees = (5×4) + (2×3) = 26. By Handshaking Lemma, 2|E| = 26 ⇒ |E| = 13."
+                },
+                {
+                    q: "What condition guarantees an Euler CIRCUIT in a connected graph?",
+                    options: ["Exactly 2 odd vertices", "All vertices have even degree", "No odd degree vertices & acyclic", "At least one vertex has degree 2"],
+                    correct: 1,
+                    exp: "An Euler circuit exists iff every single vertex in the connected graph has an even degree."
+                },
+                {
+                    q: "How many leaves does a full 3-ary tree with 5 internal vertices have?",
+                    options: ["10 leaves", "11 leaves", "15 leaves", "16 leaves"],
+                    correct: 1,
+                    exp: "Formula: l = (m - 1)i + 1 = (3 - 1)(5) + 1 = 10 + 1 = 11 leaves."
+                },
+                {
+                    q: "What is the order of nodes visited in a PREORDER tree traversal?",
+                    options: ["Left, Root, Right", "Left, Right, Root", "Root, Left, Right", "Root, Right, Left"],
+                    correct: 2,
+                    exp: "Preorder visits the Root first, then Left Subtree, then Right Subtree."
+                }
+            ];
+
+            let currentQ = 0;
+
+            function renderQuestion() {
+                const q = questions[currentQ];
+                document.getElementById("q-text").innerText = `Q${currentQ + 1}: ${q.q}`;
+                const optsContainer = document.getElementById("q-options");
+                optsContainer.innerHTML = "";
+                document.getElementById("q-feedback").innerText = "";
+
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement("button");
+                    btn.className = "option-btn";
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(idx);
+                    optsContainer.appendChild(btn);
+                });
+            }
+
+            function checkAnswer(selectedIdx) {
+                const q = questions[currentQ];
+                const feedback = document.getElementById("q-feedback");
+
+                if (selectedIdx === q.correct) {
+                    feedback.style.color = "var(--success)";
+                    feedback.innerText = `Correct! ${q.exp}`;
+                } else {
+                    feedback.style.color = "#f87171";
+                    feedback.innerText = `Incorrect. ${q.exp}`;
+                }
+
+                setTimeout(() => {
+                    currentQ = (currentQ + 1) % questions.length;
+                    renderQuestion();
+                }, 3500);
+            }
+
+            renderQuestion();
+        </script>
+    </body>
+
+    </html>

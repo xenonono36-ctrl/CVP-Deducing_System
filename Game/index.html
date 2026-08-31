@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Discrete Math: Quest for the Exam Crown</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- HEADER -->
+        <header class="game-header">
+            <div class="header-left">
+                <h1 class="game-title">⚡ DISCRETE MATH QUEST ⚡</h1>
+                <p class="exam-timer" id="examTimer">Loading countdown...</p>
+            </div>
+            <div class="header-right">
+                <div class="stat-box">
+                    <div class="stat">
+                        <span class="stat-label">LEVEL</span>
+                        <span class="stat-value" id="level">1</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">XP</span>
+                        <span class="stat-value" id="xpDisplay">0/100</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">STREAK</span>
+                        <span class="stat-value streak-fire" id="streak">🔥 0</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN NAVIGATION TABS -->
+        <nav class="main-nav">
+            <button class="nav-btn active" data-tab="dashboard">📊 DASHBOARD</button>
+            <button class="nav-btn" data-tab="schedule">📅 QUEST MAP</button>
+            <button class="nav-btn" data-tab="study">📚 STUDY MODE</button>
+            <button class="nav-btn" data-tab="practice">🎯 BATTLE ARENA</button>
+            <button class="nav-btn" data-tab="achievements">🏆 ACHIEVEMENTS</button>
+        </nav>
+
+        <!-- DASHBOARD TAB -->
+        <section id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <!-- MAIN QUEST CARD -->
+                <div class="quest-card featured">
+                    <div class="quest-header">
+                        <h2>⚔️ THE GREAT EXAM BATTLE</h2>
+                        <p class="quest-deadline">Monday, Aug 31 @ 2:30 PM</p>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="mainProgress" style="width: 0%"></div>
+                        </div>
+                        <p class="progress-text">Overall Study Progress: <span id="overallPercent">0</span>%</p>
+                    </div>
+                    <div class="quest-description">
+                        Master 4 chapters of discrete mathematics. Defeat 50+ practice problems. Unlock the path to victory!
+                    </div>
+                    <div class="quest-rewards">
+                        <span class="reward xp-reward">+5000 XP</span>
+                        <span class="reward badge-reward">👑 Legend Badge</span>
+                    </div>
+                </div>
+
+                <!-- TODAY'S CHALLENGES -->
+                <div class="challenges-section">
+                    <h3>🎯 TODAY'S CHALLENGES</h3>
+                    <div id="todaysChallenges" class="challenges-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- POWER-UPS -->
+                <div class="powerups-section">
+                    <h3>⚡ ACTIVE POWER-UPS</h3>
+                    <div class="powerups-grid" id="powerups">
+                        <div class="powerup" title="Double XP for 1 hour">
+                            <div class="powerup-icon">2️⃣</div>
+                            <div class="powerup-name">Double XP</div>
+                            <button class="activate-btn" onclick="activatePowerup('doubleXP')">Activate</button>
+                        </div>
+                        <div class="powerup" title="Skip any one problem">
+                            <div class="powerup-icon">⏭️</div>
+                            <div class="powerup-name">Skip Card</div>
+                            <button class="activate-btn" onclick="activatePowerup('skipCard')">Activate</button>
+                        </div>
+                        <div class="powerup" title="Hint for any problem">
+                            <div class="powerup-icon">💡</div>
+                            <div class="powerup-name">Hint System</div>
+                            <button class="activate-btn" onclick="activatePowerup('hints')">Activate</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATS SUMMARY -->
+                <div class="stats-summary">
+                    <h3>📈 YOUR STATS</h3>
+                    <div class="stat-row">
+                        <span>Study Sessions Completed:</span>
+                        <span class="stat-highlight" id="sessionsCompleted">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Total Study Time:</span>
+                        <span class="stat-highlight" id="totalTime">0h 0m</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Problems Solved:</span>
+                        <span class="stat-highlight" id="problemsSolved">0/50+</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Accuracy Rate:</span>
+                        <span class="stat-highlight" id="accuracy">0%</span>
+
+                                    <!-- SHOOTOUT STATS -->
+                                    <div class="stats-summary">
+                                        <h3>⚽ PENALTY SHOOTOUT STATS</h3>
+                                        <div class="stat-row">
+                                            <span>Goals Scored:</span>
+                                            <span class="stat-highlight" id="goalsScored" style="color: #4ECDC4;">0</span>
+                                        </div>
+                                        <div class="stat-row">
+                                            <span>Saves Made:</span>
+                                            <span class="stat-highlight" id="goalsMissed" style="color: #4ECDC4;">0</span>
+                                        </div>
+                                        <div class="stat-row">
+                                            <span>Shootout Experience:</span>
+                                            <span class="stat-highlight" id="shootoutStats" style="color: #FFB84D;">0 completed</span>
+                                        </div>
+                                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCHEDULE/QUEST MAP TAB -->
+        <section id="schedule" class="tab-content">
+            <div class="schedule-container">
+                <h2>📅 YOUR QUEST MAP</h2>
+                <div class="day-selector">
+                    <button class="day-btn active" data-day="0">Saturday</button>
+                    <button class="day-btn" data-day="1">Sunday</button>
+                    <button class="day-btn" data-day="2">Monday</button>
+                </div>
+
+                <div id="scheduleContent" class="schedule-content">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- STUDY MODE TAB -->
+        <section id="study" class="tab-content">
+            <div class="study-container">
+                <h2>📚 STUDY MODE</h2>
+                <div class="chapter-selector">
+                    <button class="chapter-btn active" data-chapter="4.1">
+                        <span class="chapter-number">4.1</span>
+                        <span class="chapter-name">Divisibility</span>
+                    </button>
+                    <button class="chapter-btn" data-chapter="4.3">
+                        <span class="chapter-number">4.3</span>
+                        <span class="chapter-name">Primes & GCD</span>
+                    </button>
+                    <button class="chapter-btn" data-chapter="4.4">
+                        <span class="chapter-number">4.4</span>
+                        <span class="chapter-name">Congruences</span>
+                    </button>
+                    <button class="chapter-btn" data-chapter="4.6">
+                        <span class="chapter-number">4.6</span>
+                        <span class="chapter-name">Cryptography</span>
+                    </button>
+                    <button class="chapter-btn" data-chapter="6.2">
+                        <span class="chapter-number">6.2</span>
+                        <span class="chapter-name">Pigeonhole</span>
+                    </button>
+                    <button class="chapter-btn" data-chapter="10">
+                        <span class="chapter-number">10</span>
+                        <span class="chapter-name">Graphs</span>
+                    </button>
+                    <button class="chapter-btn" data-chapter="11">
+                        <span class="chapter-number">11</span>
+                        <span class="chapter-name">Trees</span>
+                    </button>
+                </div>
+
+                <div id="studyContent" class="study-content">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="study-timer">
+                    <h3>⏱️ Study Timer</h3>
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn" onclick="startTimer()">▶️ START</button>
+                        <button class="timer-btn" onclick="pauseTimer()">⏸️ PAUSE</button>
+                        <button class="timer-btn" onclick="resetTimer()">🔄 RESET</button>
+                    </div>
+                    <div class="timer-presets">
+                        <button onclick="setTimer(25)">25m</button>
+                        <button onclick="setTimer(45)">45m</button>
+                        <button onclick="setTimer(90)">90m</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRACTICE/BATTLE ARENA TAB -->
+        <section id="practice" class="tab-content">
+            <div class="practice-container">
+                <h2>🎯 BATTLE ARENA - PRACTICE PROBLEMS</h2>
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn active" data-difficulty="easy">⭐ Easy</button>
+                    <button class="difficulty-btn" data-difficulty="medium">⭐⭐ Medium</button>
+                    <button class="difficulty-btn" data-difficulty="hard">⭐⭐⭐ Hard</button>
+                    <button class="difficulty-btn" data-difficulty="insane">⭐⭐⭐⭐ INSANE</button>
+                </div>
+
+                <div id="problemArea" class="problem-area">
+                    <!-- Problem cards generated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ACHIEVEMENTS TAB -->
+        <section id="achievements" class="tab-content">
+            <div class="achievements-container">
+                <h2>🏆 ACHIEVEMENT HALL</h2>
+                <div class="achievement-stats">
+                    <div class="achievement-stat">
+                        <span class="stat-number" id="achievementCount">0</span>
+                        <span class="stat-label">Unlocked</span>
+                    </div>
+                    <div class="achievement-stat">
+                        <span class="stat-number" id="totalAchievements">0</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                </div>
+                <div id="achievementGrid" class="achievement-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- FLOATING NOTIFICATION -->
+        <div id="notification" class="notification hidden"></div>
+
+        <!-- FLOATING DIALOG -->
+        <div id="modalOverlay" class="modal-overlay hidden"></div>
+        <div id="modal" class="modal hidden">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modalContent" class="modal-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
