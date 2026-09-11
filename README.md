@@ -3,7 +3,7 @@
 ## Overview
 This project is a lightweight accounting software system built to demonstrate how a business can record accounting transactions, maintain a chart of accounts, prepare a trial balance, and summarize financial performance in a simple web application.
 
-The application is designed around the core accounting concepts typically discussed in Module 4:
+The application is designed around the core accounting concepts typically discussed in Module 4:  
 - Chart of accounts
 - Journal entries
 - Posting to ledger accounts
