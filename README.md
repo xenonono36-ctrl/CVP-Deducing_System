@@ -16,7 +16,7 @@ Businesses need a reliable way to track their financial transactions and produce
 - classify them under correct accounts,
 - ensure debits and credits are balanced,
 - prepare a trial balance,
-- calculate financial results such as revenue, expenses, and net income.
+- calculate financial results such as revenue, expenses, and net income.   
 
 The problem is to transform raw financial transactions into accurate and usable accounting data that a business can review and act on.
 
